@@ -31,11 +31,14 @@ list(
   # Rename the Hindi columns to clean English names (see R/column_dictionary.R).
   tar_target(works_clean, get_works_clean(works_long)),
 
+  # Parse the proposer field into structured legislator/constituency columns.
+  tar_target(works_by_mla, get_works_by_mla(works_clean)),
+
   # ---- Analysis ----
   # Per-district summary: work counts and total estimated cost.
   tar_target(district_summary, get_district_summary(works_clean)),
 
   # ---- Outputs ----
-  # Write the cleaned per-work table to CSV; return the path (file target).
-  tar_target(works_csv_path, get_works_csv_path(works_clean), format = "file")
+  # Write the enriched per-work table (incl. MLA columns) to CSV; return path.
+  tar_target(works_csv_path, get_works_csv_path(works_by_mla), format = "file")
 )

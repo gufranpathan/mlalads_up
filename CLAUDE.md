@@ -42,8 +42,21 @@ Rscript --no-save --no-restore -e "targets::tar_make()"
 
 Current targets: `raw_json_path` (file) → `raw_json` → `works_long`
 (tidy, one row per work, 30,344 rows, original Hindi headers) → `works_clean`
-(same table with clean English column names) → `district_summary` /
-`works_csv_path`.
+(same table with clean English column names) → `works_by_mla` (adds parsed
+legislator/constituency columns) → `district_summary` / `works_csv_path`
+(exports `works_by_mla`).
+
+## Mapping works to MLAs
+
+- `R/get_works_by_mla.R` parses `proposer_name_designation_area` into
+  `proposer_person`, `proposer_role` (MLA/MLC), `house`, `constituency`, and
+  `constituency_key` (a whitespace-stripped join key). House/role come from the
+  **trailing `(विधान सभा)` / `(विधान परिषद)` tag**, not a substring search —
+  some MLC seats literally contain "विधान सभा 16" in their name.
+- Coverage: ~98% of works get a constituency, ~96% a person name;
+  ~24.5k MLA rows, ~5.2k MLC rows. Join on `constituency_key`, not the raw name.
+- Do **not** use `proposer_name` (col 40) as the legislator — it is the
+  uploader account code (e.g. `IDA_AGRA`, `MLC_BhupendraSingh`).
 
 ## Column names / data dictionary
 

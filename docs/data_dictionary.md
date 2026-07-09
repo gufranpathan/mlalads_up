@@ -54,3 +54,16 @@ in the cleaned CSV to its **description** and the **original source header**
 | 41 | `work_added_date` | Date the work record was added/entered (कार्य जोड़ने की तिथि). | कार्य जोड़ने की तिथि |
 | 42 | `status_bucket` | Scraper status bucket the work was first found under (proposed / pending_* / sanctioned_* / rejected). | __bucket |
 
+## Derived columns (`works_by_mla` target)
+
+Added by `R/get_works_by_mla.R`, which parses `proposer_name_designation_area`
+into structured legislator/constituency fields. See that function for the exact rules.
+
+| English column | Description |
+|---|---|
+| `proposer_person` | Legislator's name, parsed from the text before the "माननीय विधायक" marker. NA when the source lists no name. |
+| `proposer_role` | `MLA` (Vidhan Sabha member) or `MLC` (Vidhan Parishad member), from the trailing house tag. |
+| `house` | `Vidhan Sabha` (Legislative Assembly) or `Vidhan Parishad` (Legislative Council). |
+| `constituency` | Constituency / council-seat name, with the `विo सo` (Vidhan Sabha) prefix stripped. |
+| `constituency_key` | Whitespace-stripped join key so spelling/spacing variants of a constituency collapse together. |
+
