@@ -50,10 +50,10 @@ Current targets: `raw_json_path` (file) → `raw_json` → `works_long`
 - `R/column_dictionary.R` is the **single source of truth** for the Hindi→English
   column mapping and descriptions. `get_works_clean()` renames by it (positional,
   with a column-count guard).
-- `data_dictionary.md` is **generated** — run
+- `docs/data_dictionary.md` is **generated** — run
   `Rscript --no-save --no-restore scripts/build_data_dictionary.R` after editing
   the dictionary (requires `tar_make()` to have run, since it reads the exact
-  Hindi headers from `works_long`). Never hand-edit `data_dictionary.md`.
+  Hindi headers from `works_long`). Never hand-edit `docs/data_dictionary.md`.
 - Note two abbreviations in the source: **IDA** (आईoडीoएo, the district nodal
   agency) and **IA** (आईoएo, implementing agency) — kept distinct as they appear
   in the portal.

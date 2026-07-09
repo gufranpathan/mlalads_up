@@ -1,4 +1,4 @@
-# Regenerate data_dictionary.md from column_dictionary() + the actual source
+# Regenerate docs/data_dictionary.md from column_dictionary() + the actual source
 # headers in the data. Run from the project root:
 #   Rscript --no-save --no-restore scripts/build_data_dictionary.R
 #
@@ -39,8 +39,8 @@ lines <- c(
   ""
 )
 
-con <- file("data_dictionary.md", open = "wb")
+con <- file("docs/data_dictionary.md", open = "wb")
 writeLines(enc2utf8(lines), con, useBytes = TRUE)
 close(con)
 
-cat("Wrote data_dictionary.md with", nrow(dict), "columns.\n")
+cat("Wrote docs/data_dictionary.md with", nrow(dict), "columns.\n")

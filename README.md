@@ -10,6 +10,7 @@ portal (**[mlaladsup.in](https://mlaladsup.in/)** — विधान मण्�
 |---|---|
 | `data/mlaladsup_ALL_districts_FY2023-24_works.json` | All 75 districts, FY 2023-24. 30,344 unique works (~117 MB). |
 | `docs/mlaladsup_scrape_reproducibility.md` | Full reproducibility write-up: reverse-engineered API contract, scraper code, and an end-to-end checklist. |
+| `docs/data_dictionary.md` | Column dictionary: clean English name, description, and original Hindi header for all 42 columns. |
 
 ## The dataset
 
