@@ -1,0 +1,37 @@
+library(targets)
+library(tarchetypes)
+
+# Packages every target needs at runtime.
+tar_option_set(
+  packages = c("jsonlite", "dplyr", "tidyr", "readr", "purrr", "tibble")
+)
+
+# Source all helper functions from R/ (each named get_<target>).
+tar_source()
+
+list(
+  # ---- Inputs ----
+  # Raw scraped JSON, tracked by content hash so downstream targets re-run
+  # only when the file actually changes.
+  tar_target(
+    raw_json_path,
+    "data/mlaladsup_ALL_districts_FY2023-24_works.json",
+    format = "file"
+  ),
+
+  # ---- Readers ----
+  # Parse the nested JSON (meta + per-district works) into an R list.
+  tar_target(raw_json, get_raw_json(raw_json_path)),
+
+  # ---- Cleaning ----
+  # Flatten every district's works into one tidy, one-row-per-work table.
+  tar_target(works_long, get_works_long(raw_json)),
+
+  # ---- Analysis ----
+  # Per-district summary: work counts and total estimated cost.
+  tar_target(district_summary, get_district_summary(works_long)),
+
+  # ---- Outputs ----
+  # Write the cleaned per-work table to CSV; return the path (file target).
+  tar_target(works_csv_path, get_works_csv_path(works_long), format = "file")
+)

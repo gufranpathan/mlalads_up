@@ -1,0 +1,25 @@
+# Scraped data — large (>100 MB), distributed separately, not committed to git
+data/
+
+# targets pipeline cache (rebuildable from _targets.R)
+_targets/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+renv/library/
