@@ -1,14 +1,12 @@
 #' Per-district summary: number of works and total estimated cost (₹ lakh).
 #'
-#' The estimated-cost column uses the Hindi header from the source data.
-get_district_summary <- function(works_long) {
-  cost_col <- "कार्यदायी संस्था द्वारा आगणित लागत (लाख में )"
-
-  works_long |>
+#' Consumes the cleaned works table (English column names).
+get_district_summary <- function(works_clean) {
+  works_clean |>
     dplyr::mutate(
-      est_cost_lakh = suppressWarnings(as.numeric(.data[[cost_col]]))
+      est_cost_lakh = suppressWarnings(as.numeric(estimated_cost_lakh))
     ) |>
-    dplyr::group_by(districtId, districtName) |>
+    dplyr::group_by(district_id, district_name) |>
     dplyr::summarise(
       n_works             = dplyr::n(),
       total_est_cost_lakh = sum(est_cost_lakh, na.rm = TRUE),

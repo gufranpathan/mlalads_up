@@ -41,7 +41,22 @@ Rscript --no-save --no-restore -e "targets::tar_make()"
   Never use `install.packages()` in this project.
 
 Current targets: `raw_json_path` (file) → `raw_json` → `works_long`
-(one tidy row per work, 30,344 rows) → `district_summary` / `works_csv_path`.
+(tidy, one row per work, 30,344 rows, original Hindi headers) → `works_clean`
+(same table with clean English column names) → `district_summary` /
+`works_csv_path`.
+
+## Column names / data dictionary
+
+- `R/column_dictionary.R` is the **single source of truth** for the Hindi→English
+  column mapping and descriptions. `get_works_clean()` renames by it (positional,
+  with a column-count guard).
+- `data_dictionary.md` is **generated** — run
+  `Rscript --no-save --no-restore scripts/build_data_dictionary.R` after editing
+  the dictionary (requires `tar_make()` to have run, since it reads the exact
+  Hindi headers from `works_long`). Never hand-edit `data_dictionary.md`.
+- Note two abbreviations in the source: **IDA** (आईoडीoएo, the district nodal
+  agency) and **IA** (आईoएo, implementing agency) — kept distinct as they appear
+  in the portal.
 
 ## Domain facts worth keeping in mind
 

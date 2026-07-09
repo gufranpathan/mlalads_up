@@ -24,14 +24,18 @@ list(
   tar_target(raw_json, get_raw_json(raw_json_path)),
 
   # ---- Cleaning ----
-  # Flatten every district's works into one tidy, one-row-per-work table.
+  # Flatten every district's works into one tidy, one-row-per-work table
+  # (original Hindi column names preserved).
   tar_target(works_long, get_works_long(raw_json)),
+
+  # Rename the Hindi columns to clean English names (see R/column_dictionary.R).
+  tar_target(works_clean, get_works_clean(works_long)),
 
   # ---- Analysis ----
   # Per-district summary: work counts and total estimated cost.
-  tar_target(district_summary, get_district_summary(works_long)),
+  tar_target(district_summary, get_district_summary(works_clean)),
 
   # ---- Outputs ----
   # Write the cleaned per-work table to CSV; return the path (file target).
-  tar_target(works_csv_path, get_works_csv_path(works_long), format = "file")
+  tar_target(works_csv_path, get_works_csv_path(works_clean), format = "file")
 )
