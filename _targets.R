@@ -19,9 +19,19 @@ list(
     format = "file"
   ),
 
+  # Portal's MLA-wise summary (Legislative Assembly, FY 2023-24).
+  tar_target(
+    mla_summary_json_path,
+    "data/mlaladsup_MLAWise_summary_VidhanSabha_FY2023-24.json",
+    format = "file"
+  ),
+
   # ---- Readers ----
   # Parse the nested JSON (meta + per-district works) into an R list.
   tar_target(raw_json, get_raw_json(raw_json_path)),
+
+  # Tidy the MLA-wise summary into one row per MLA.
+  tar_target(mla_summary, get_mla_summary(mla_summary_json_path)),
 
   # ---- Cleaning ----
   # Flatten every district's works into one tidy, one-row-per-work table
@@ -44,6 +54,9 @@ list(
   # ---- Analysis ----
   # Per-district summary: work counts and total estimated cost.
   tar_target(district_summary, get_district_summary(works_clean)),
+
+  # Reconcile the portal's MLA-wise summary against the work-level data.
+  tar_target(mla_reconciliation, get_mla_reconciliation(mla_summary, works_mla)),
 
   # ---- Outputs ----
   # Write the enriched per-work table (incl. MLA columns) to CSV; return path.

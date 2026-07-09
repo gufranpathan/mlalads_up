@@ -47,6 +47,10 @@ columns) → `constituency_crosswalk` (per-seat reference) → `works_mla`
 (canonical constituency columns; the analysis-ready table) → `district_summary`
 / `works_csv_path` (exports `works_mla`) / `crosswalk_csv_path`.
 
+Separate input chain: `mla_summary_json_path` (file) → `mla_summary` (portal's
+MLA-wise summary, 403 assembly MLAs, one row each) → `mla_reconciliation`
+(cross-checks it against `works_mla`).
+
 ## Mapping works to MLAs
 
 - `R/get_works_by_mla.R` parses `proposer_name_designation_area` into
@@ -94,6 +98,23 @@ columns) → `constituency_crosswalk` (per-seat reference) → `works_mla`
   5 = 2026-27. Only FY 2023-24 has been scraped so far.
 - Works are stored under 8 status buckets and deduplicated by Work ID, so
   bucket rows (~60,688) are ~2× unique works (~30,344).
+- **`status_bucket` is uniformly `"proposed"`** in the per-work table: the
+  scrape's consolidation kept only the first (proposed) bucket per Work ID, so
+  the per-work table carries **no** sanctioned/pending/rejected signal. Use the
+  `mla_summary` (or the raw `bucket_counts` per district) for status breakdowns.
+
+## MLA-wise summary & reconciliation
+
+- `mla_summary` reads the portal's separate MLAWiseWorkCounts report (assembly,
+  403 MLAs); see `docs/mlaladsup_MLAWise_summary_FY2023-24_README.md`.
+- `mla_reconciliation` (`R/get_mla_reconciliation.R`) cross-checks it:
+  - **Internal:** per-MLA rows sum exactly to the portal Total row
+    (recommended 23,574 / pending 51 / sanctioned 23,630 / rejected 3; 403 rows).
+  - **Vs work-level:** summary recommended (23,574) vs unique MLA works in
+    `works_mla` (24,542) → work-level is ~968 (4%) higher, spread systematically
+    across all 75 districts (work-level ≥ summary everywhere). Expected: the two
+    are independent portal reports; only "recommended" is comparable (status not
+    retained per-work).
 
 ## Working conventions
 
