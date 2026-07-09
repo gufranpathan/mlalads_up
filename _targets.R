@@ -34,11 +34,22 @@ list(
   # Parse the proposer field into structured legislator/constituency columns.
   tar_target(works_by_mla, get_works_by_mla(works_clean)),
 
+  # Reviewable per-seat crosswalk; applies human-verified merges and flags
+  # fuzzy near-duplicates for review (see R/constituency_overrides.R).
+  tar_target(constituency_crosswalk, get_constituency_crosswalk(works_by_mla)),
+
+  # Analysis-ready per-work table with canonical constituency columns.
+  tar_target(works_mla, get_works_mla(works_by_mla, constituency_crosswalk)),
+
   # ---- Analysis ----
   # Per-district summary: work counts and total estimated cost.
   tar_target(district_summary, get_district_summary(works_clean)),
 
   # ---- Outputs ----
   # Write the enriched per-work table (incl. MLA columns) to CSV; return path.
-  tar_target(works_csv_path, get_works_csv_path(works_by_mla), format = "file")
+  tar_target(works_csv_path, get_works_csv_path(works_mla), format = "file"),
+
+  # Write the constituency crosswalk (human-review artifact) to CSV.
+  tar_target(crosswalk_csv_path, get_crosswalk_csv_path(constituency_crosswalk),
+             format = "file")
 )

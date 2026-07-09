@@ -42,9 +42,10 @@ Rscript --no-save --no-restore -e "targets::tar_make()"
 
 Current targets: `raw_json_path` (file) → `raw_json` → `works_long`
 (tidy, one row per work, 30,344 rows, original Hindi headers) → `works_clean`
-(same table with clean English column names) → `works_by_mla` (adds parsed
-legislator/constituency columns) → `district_summary` / `works_csv_path`
-(exports `works_by_mla`).
+(clean English column names) → `works_by_mla` (parsed legislator/constituency
+columns) → `constituency_crosswalk` (per-seat reference) → `works_mla`
+(canonical constituency columns; the analysis-ready table) → `district_summary`
+/ `works_csv_path` (exports `works_mla`) / `crosswalk_csv_path`.
 
 ## Mapping works to MLAs
 
@@ -54,9 +55,18 @@ legislator/constituency columns) → `district_summary` / `works_csv_path`
   **trailing `(विधान सभा)` / `(विधान परिषद)` tag**, not a substring search —
   some MLC seats literally contain "विधान सभा 16" in their name.
 - Coverage: ~98% of works get a constituency, ~96% a person name;
-  ~24.5k MLA rows, ~5.2k MLC rows. Join on `constituency_key`, not the raw name.
-- Do **not** use `proposer_name` (col 40) as the legislator — it is the
-  uploader account code (e.g. `IDA_AGRA`, `MLC_BhupendraSingh`).
+  ~24.5k MLA rows, ~5.2k MLC rows.
+- **Do not fuzzy-merge constituency names.** The parsed keys are already ~1:1
+  with real seats (400 MLA keys vs 403 assembly seats; 91 MLC keys), and many
+  distinct seats differ by 1-2 chars (इटवा≠इटावा, सैदपुर≠जैदपुर, कोराव≠सोराव).
+  `constituency_crosswalk` uses fuzzy matching only to *flag* `near_duplicates`
+  for human review; confirmed same-seat merges are hand-entered in
+  `R/constituency_overrides.R` (currently empty — none were warranted).
+- Join on `constituency_key` / `constituency_canonical`, not the raw name. Do
+  **not** use `proposer_name` (col 40) as the legislator — it is the uploader
+  account code (e.g. `IDA_AGRA`, `MLC_BhupendraSingh`).
+- Mapping to official ECI constituency numbers is a further step: supply an
+  authoritative seat list and left-join it on `constituency_key`.
 
 ## Column names / data dictionary
 
